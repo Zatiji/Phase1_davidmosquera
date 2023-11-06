@@ -1,6 +1,7 @@
 import argparse
-from datetime import date
+import datetime
 import json
+import requests
 
 
 def analyser_commande():
@@ -46,6 +47,30 @@ def analyser_commande():
     
 
     return parser.parse_args()
+
+#retourne en tuple la valeur d'une bourse de compagnie
+def produire_historique(nomSymbole, daDebut, daFin, valDé):
+    """
+    Cherche les données de la bourse en allant dans le serveur de l'école récolter ces données.
+    
+    returns:
+        Une liste de tuple avec les dates et les valeurs
+        d'une bourse de compagnie et son historique.
+
+    """
+
+    #lien pour se connecter au serveur de l'école et récupérer les données
+    url = f'https://pax.ulaval.ca/action/{nomSymbole}/historique/'
+    params = {
+    'début': daDebut,
+    'fin': daFin,
+    }
+    réponse = requests.get(url = url, params = params)
+    #On traite sesinformations pour pouvoir les manipuler pour la suite
+    réponse = json.loads(réponse.text)
+
+    #
+    
 
 if __name__ == "__main__":
     args = analyser_commande()
