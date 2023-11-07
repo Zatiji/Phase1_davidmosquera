@@ -25,6 +25,7 @@ def analyser_commande():
     
     #ajout de l'argument -d
     parser.add_argument("-d", "--debut",
+                        type = str,
                         dest = "debut",
                         metavar= "DATE",
                         help = "Date recherchée la plus ancienne (format: AAAA-MM-JJ)"
@@ -33,6 +34,7 @@ def analyser_commande():
     #ajout de l'argument -f
     parser.add_argument("-f", "--fin",
                         dest = "fin",
+                        type = str,
                         metavar = "DATE",
                         help = "Date recherchée la plus récente (format: AAAA-MM-JJ)"
                         )
@@ -40,6 +42,7 @@ def analyser_commande():
     #Ajout de l'argument -v
     parser.add_argument("-v", "--valeur",
                         dest = "valeur",
+                        type = str,
                         choices=["fermeture","ouverture","min","max","volume"],
                         default = "fermeture",
                         help = "La valeur désirée (par défaut: fermeture)"
@@ -65,11 +68,18 @@ def produire_historique(nomSymbole, daDebut, daFin, valDé):
     'début': daDebut,
     'fin': daFin,
     }
-    réponse = requests.get(url = url, params = params)
+    reponse = requests.get(url = url, params = params)
     #On traite sesinformations pour pouvoir les manipuler pour la suite
-    réponse = json.loads(réponse.text)
+    reponse = json.loads(reponse.text)
 
-    #
+    #On se concentre sur le dictionnaire de l'historique de la variable réponse
+    historDate = reponse.get("historique")
+    listeRep = []
+    for i in historDate:
+        listeRep.append((i.key(), i[valDé]))
+    
+
+
     
 
 if __name__ == "__main__":
