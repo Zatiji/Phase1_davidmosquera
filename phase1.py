@@ -1,5 +1,5 @@
 import argparse
-import datetime
+from datetime import datetime
 import json
 import requests
 
@@ -51,6 +51,21 @@ def analyser_commande():
 
     return parser.parse_args()
 
+
+
+
+
+#fonction pour transformer la date en instance datetime.date
+#(Par exemple: '2003-03-03' doit retourner sous la forme datetime.date(2003, 03, 03))
+def date_forme_instance(uneDate):
+    uneDate_en_datetime = datetime.strptime(uneDate, '%Y-%m-%d')
+    uneDate_en_date = uneDate_en_datetime.date()
+    return uneDate_en_date
+
+
+
+
+
 #retourne en tuple la valeur d'une bourse de compagnie
 def produire_historique(nomSymbole, daDebut, daFin, valDé):
     """
@@ -78,6 +93,8 @@ def produire_historique(nomSymbole, daDebut, daFin, valDé):
     for i in historDate:
         listeRep.append((i.key(), i[valDé]))
     
+    #message à mettre dans le terminal lorsque qu'on enclenche la commande:
+    messagePt1 = f'titre={nomSymbole}: valeur={valDé}, début={date_forme_instance(daDebut)}, fin={date_forme_instance(daFin)}
 
 
     
