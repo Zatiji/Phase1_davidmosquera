@@ -48,7 +48,6 @@ def analyser_commande():
                         help = "La valeur désirée (par défaut: fermeture)"
                        )
     
-
     return parser.parse_args()
 
 
@@ -91,13 +90,15 @@ def produire_historique(nomSymbole, daDebut, daFin, valDé):
     historDate = reponse.get("historique")
     listeRep = []
     for i in historDate:
-        listeRep.append((i.key(), i[valDé]))
+        listeRep.append((date_forme_instance(i.key()), i[valDé]))
     
     #message à mettre dans le terminal lorsque qu'on enclenche la commande:
-    messagePt1 = f'titre={nomSymbole}: valeur={valDé}, début={date_forme_instance(daDebut)}, fin={date_forme_instance(daFin)}
-
+    print(f"titre={nomSymbole}: valeur={valDé}, début={date_forme_instance(daDebut)}, fin={date_forme_instance(daFin)}")
+    print(listeRep)
+    
 
     
 
 if __name__ == "__main__":
     args = analyser_commande()
+    produire_historique(args.symbole, args.debut, args.fin, args.valeur)
