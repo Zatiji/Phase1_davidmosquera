@@ -25,7 +25,7 @@ def analyser_commande():
     
     #ajout de l'argument -d
     parser.add_argument("-d", "--debut",
-                        type = str,
+                        type = datetime.date.fromisoformat,
                         dest = "debut",
                         metavar= "DATE",
                         help = "Date recherchée la plus ancienne (format: AAAA-MM-JJ)"
@@ -34,7 +34,7 @@ def analyser_commande():
     #ajout de l'argument -f
     parser.add_argument("-f", "--fin",
                         dest = "fin",
-                        type = str,
+                        type = datetime.date.fromisoformat,
                         metavar = "DATE",
                         help = "Date recherchée la plus récente (format: AAAA-MM-JJ)"
                         )
@@ -54,19 +54,7 @@ def analyser_commande():
 
 
 
-#fonction pour transformer la date en instance datetime.date
-#(Par exemple: '2003-03-03' doit retourner sous la forme datetime.date(2003, 03, 03))
-def date_forme_instance(uneDate):
-    uneDate_en_datetime = datetime.strptime(uneDate, '%Y-%m-%d')
-    uneDate_en_date = uneDate_en_datetime.date()
-    return uneDate_en_date
-
-
-
-
-
-#retourne en tuple la valeur d'une bourse de compagnie
-def produire_historique(nomSymbole, daDebut, daFin, valDé):
+def produire_historique(nomSymbole, daDebut, daFin, valNom):
     """
     Cherche les données de la bourse en allant dans le serveur de l'école récolter ces données.
     
@@ -77,23 +65,24 @@ def produire_historique(nomSymbole, daDebut, daFin, valDé):
     """
 
     #lien pour se connecter au serveur de l'école et récupérer les données
+    #On traite après les informations pour pouvoir les manipuler pour la suite
     url = f'https://pax.ulaval.ca/action/{nomSymbole}/historique/'
     params = {
     'début': daDebut,
     'fin': daFin,
     }
     reponse = requests.get(url = url, params = params)
-    #On traite sesinformations pour pouvoir les manipuler pour la suite
     reponse = json.loads(reponse.text)
+    print(reponse)
 
     #On se concentre sur le dictionnaire de l'historique de la variable réponse
-    historDate = reponse.get("historique")
+    historDate = reponse["historique"]
     listeRep = []
     for i in historDate:
-        listeRep.append((date_forme_instance(i.key()), i[valDé]))
+        listeRep.append(tuple(i, [valNom]))
     
     #message à mettre dans le terminal lorsque qu'on enclenche la commande:
-    print(f"titre={nomSymbole}: valeur={valDé}, début={date_forme_instance(daDebut)}, fin={date_forme_instance(daFin)}")
+    print(f"titre={nomSymbole}: valeur={valNom}, début={daDebut}, fin={daFin}")
     print(listeRep)
     
 
