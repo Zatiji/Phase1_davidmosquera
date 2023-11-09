@@ -1,5 +1,5 @@
 import argparse
-from datetime import datetime
+import datetime
 import json
 import requests
 
@@ -17,7 +17,7 @@ def analyser_commande():
     parser = argparse.ArgumentParser("Extraction de valeurs historiques pour un ou plusieurs symboles boursiers.")
 
     #ajout d'argument positionnel symbole
-    parser.add_argument("symbole",
+    parser.add_argument("symboles",
                         nargs = "+",
                         type = str,
                         help = "Nom d'un symbole boursier"
@@ -34,6 +34,7 @@ def analyser_commande():
     #ajout de l'argument -f
     parser.add_argument("-f", "--fin",
                         dest = "fin",
+                        default = datetime.date.today(),
                         type = datetime.date.fromisoformat,
                         metavar = "DATE",
                         help = "Date recherchée la plus récente (format: AAAA-MM-JJ)"
@@ -63,31 +64,41 @@ def produire_historique(nomSymbole, daDebut, daFin, valNom):
         d'une bourse de compagnie et son historique.
 
     """
+    #on met en dadébut en défault s'il n'est pas nommé:
+    if daDebut == None:
+        daDebut = daFin
 
-    #lien pour se connecter au serveur de l'école et récupérer les données
-    #On traite après les informations pour pouvoir les manipuler pour la suite
-    url = f'https://pax.ulaval.ca/action/{nomSymbole}/historique/'
-    params = {
-    'début': daDebut,
-    'fin': daFin,
-    }
-    reponse = requests.get(url = url, params = params)
-    reponse = json.loads(reponse.text)
-    print(reponse)
+    #On met une boucle car nomSymbole commence comme une liste de string
+    for i in nomSymbole:
+        #lien pour se connecter au serveur de l'école et récupérer les données
+        #On traite après les informations pour pouvoir les manipuler pour la suite
+        url = f'https://pax.ulaval.ca/action/{i}/historique/'
+        params = {
+        'début': daDebut,
+        'fin': daFin,
+        }
+        reponse = requests.get(url = url, params = params)
+        reponse = json.loads(reponse.text)
 
-    #On se concentre sur le dictionnaire de l'historique de la variable réponse
-    historDate = reponse["historique"]
-    listeRep = []
-    for i in historDate:
-        listeRep.append(tuple(i, [valNom]))
-    
-    #message à mettre dans le terminal lorsque qu'on enclenche la commande:
-    print(f"titre={nomSymbole}: valeur={valNom}, début={daDebut}, fin={daFin}")
-    print(listeRep)
-    
+        #On se concentre sur le dictionnaire de l'historique de la variable réponse
+        historDate = reponse.get("historique")
+        #le dictionnaire des valeurs dans hisorDate
+        élément_historDate = historDate.get
 
-    
+        #On crée la liste de tuple et rajoute les tuples dans la liste
+        listeRep = []
+        for j in historDate:
+            #le dictionnaire affecté au dates (j) ayant les valeurs des éléments.
+            dernier_dico = historDate.get(j)
+            print(dernier_dico)
+            listeRep.append((j, dernier_dico.get(valNom)))
+        
+        #message à mettre dans le terminal lorsque qu'on enclenche la commande:
+        print(f"titre={i}: valeur={3}, début={daDebut}, fin={daFin}")
+        print(listeRep)
+
+        
 
 if __name__ == "__main__":
     args = analyser_commande()
-    produire_historique(args.symbole, args.debut, args.fin, args.valeur)
+    produire_historique(args.symboles, args.debut, args.fin, args.valeur)
