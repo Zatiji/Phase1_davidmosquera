@@ -14,7 +14,8 @@ def analyser_commande():
         symboles à traiter, et les attributs «début», «fin» et «valeur»
         associés aux arguments optionnels de la ligne de commande.
     """
-    parser = argparse.ArgumentParser("Extraction de valeurs historiques pour un ou plusieurs symboles boursiers.")
+
+    parser = argparse.ArgumentParser(description="Extraction de valeurs historiques pour un ou plusieurs symboles boursiers.")
 
     #ajout d'argument positionnel symbole
     parser.add_argument("symboles",
