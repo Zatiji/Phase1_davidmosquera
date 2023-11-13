@@ -52,14 +52,6 @@ def analyser_commande():
     
     return parser.parse_args()
 
-
-
-
-
-
-
-
-
 def produire_historique(nomSymbole, daDebut, daFin, valName):
     """
     Cherche les données de la bourse en allant dans le serveur de l'école récolter ces données.
@@ -76,7 +68,6 @@ def produire_historique(nomSymbole, daDebut, daFin, valName):
     #On met une boucle car nomSymbole commence comme une liste de string
     for i in nomSymbole:
         #lien pour se connecter au serveur de l'école et récupérer les données
-        #On traite après les informations pour pouvoir les manipuler pour la suite
         url = f'https://pax.ulaval.ca/action/{i}/historique/'
         params = {
         'début': daDebut,
@@ -93,17 +84,18 @@ def produire_historique(nomSymbole, daDebut, daFin, valName):
         for j in historDate:
             #le dictionnaire affecté au dates (j) ayant les valeurs des éléments.
             dernier_dico = historDate.get(j)
+
             #On transforme la clé (string) en format datetime.date()
             iso_date = datetime.date.fromisoformat(j)
-            #on ajoute le tuple dans la liste
+
+            #on ajoute le tuple dans la liste.
             listeRep.append((iso_date, dernier_dico.get(valName)))
-        
+
         #message à mettre dans le terminal lorsque qu'on enclenche la commande:
         print(f"titre={i}: valeur={valName}, début={daDebut.__repr__()}, fin={daFin.__repr__()}")
         print(listeRep)
 
-        
-
+#condition de start
 if __name__ == "__main__":
     args = analyser_commande()
     produire_historique(args.symboles, args.debut, args.fin, args.valeur)
