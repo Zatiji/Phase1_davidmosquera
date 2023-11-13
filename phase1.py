@@ -56,7 +56,11 @@ def analyser_commande():
 
 
 
-def produire_historique(nomSymbole, daDebut, daFin, valNom):
+
+
+
+
+def produire_historique(nomSymbole, daDebut, daFin, valName):
     """
     Cherche les données de la bourse en allant dans le serveur de l'école récolter ces données.
     
@@ -83,19 +87,19 @@ def produire_historique(nomSymbole, daDebut, daFin, valNom):
 
         #On se concentre sur le dictionnaire de l'historique de la variable réponse
         historDate = reponse.get("historique")
-        #le dictionnaire des valeurs dans hisorDate
-        élément_historDate = historDate.get
 
         #On crée la liste de tuple et rajoute les tuples dans la liste
         listeRep = []
         for j in historDate:
             #le dictionnaire affecté au dates (j) ayant les valeurs des éléments.
             dernier_dico = historDate.get(j)
-            print(dernier_dico)
-            listeRep.append((j, dernier_dico.get(valNom)))
+            #On transforme la clé (string) en format datetime.date()
+            iso_date = datetime.date.fromisoformat(j)
+            #on ajoute le tuple dans la liste
+            listeRep.append((iso_date, dernier_dico.get(valName)))
         
         #message à mettre dans le terminal lorsque qu'on enclenche la commande:
-        print(f"titre={i}: valeur={3}, début={daDebut}, fin={daFin}")
+        print(f"titre={i}: valeur={valName}, début={daDebut.__repr__()}, fin={daFin.__repr__()}")
         print(listeRep)
 
         
