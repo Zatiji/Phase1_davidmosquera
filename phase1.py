@@ -92,7 +92,7 @@ def produire_historique(nomSymbole, daDebut, daFin, valName):
             listeRep.append((iso_date, dernier_dico.get(valName)))
 
         #message à mettre dans le terminal lorsque qu'on enclenche la commande:
-        print(f"titre={i}: valeur={valName}, début={daDebut.__repr__()}, fin={daFin.__repr__()}")
+        print(f"titre={i}: valeur={valName}, début={datetime.date.fromisoformat(daDebut)}, fin={datetime.date.fromisoformat(daFin)}")
         print(listeRep)
 
 #condition de start
