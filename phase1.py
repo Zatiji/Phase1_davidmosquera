@@ -15,7 +15,9 @@ def analyser_commande():
         associés aux arguments optionnels de la ligne de commande.
     """
 
-    parser = argparse.ArgumentParser(description="Extraction de valeurs historiques pour un ou plusieurs symboles boursiers.")
+    parser = argparse.ArgumentParser(
+        description="Extraction de valeurs historiques pour un ou plusieurs symboles boursiers."
+        )
 
     #ajout d'argument positionnel symbole
     parser.add_argument("symboles",
@@ -52,7 +54,7 @@ def analyser_commande():
     
     return parser.parse_args()
 
-def produire_historique(nomSymbole, daDebut, daFin, valName):
+def produire_historique(nomsymbole, dadebut, dafin, valname):
     """
     Cherche les données de la bourse en allant dans le serveur de l'école récolter ces données.
     
@@ -62,38 +64,38 @@ def produire_historique(nomSymbole, daDebut, daFin, valName):
 
     """
     #on met en dadébut en défault s'il n'est pas nommé:
-    if daDebut == None:
-        daDebut = daFin
+    if dadebut is None:
+        dadebut = dafin
 
     #On met une boucle car nomSymbole commence comme une liste de string
-    for i in nomSymbole:
+    for i in nomsymbole:
         #lien pour se connecter au serveur de l'école et récupérer les données
         url = f'https://pax.ulaval.ca/action/{i}/historique/'
         params = {
-        'début': daDebut,
-        'fin': daFin,
+        'début': dadebut,
+        'fin': dafin,
         }
         reponse = requests.get(url = url, params = params)
         reponse = json.loads(reponse.text)
 
         #On se concentre sur le dictionnaire de l'historique de la variable réponse
-        historDate = reponse.get("historique")
+        histordate = reponse.get("historique")
 
         #On crée la liste de tuple et rajoute les tuples dans la liste
-        listeRep = []
-        for j in historDate:
+        listerep = []
+        for j in histordate:
             #le dictionnaire affecté au dates (j) ayant les valeurs des éléments.
-            dernier_dico = historDate.get(j)
+            dernier_dico = histordate.get(j)
 
             #On transforme la clé (string) en format datetime.date()
             iso_date = datetime.date.fromisoformat(j)
 
             #on ajoute le tuple dans la liste.
-            listeRep.append((iso_date, dernier_dico.get(valName)))
+            listerep.append((iso_date, dernier_dico.get(valname)))
 
         #message à mettre dans le terminal lorsque qu'on enclenche la commande:
-        print(f"titre={i}: valeur={valName}, début={daDebut.__repr__()}, fin={daDebut.__repr__()}")
-        print(listeRep)
+        print(f"titre={i}: valeur={valname}, début={repr(dadebut)}, fin={repr(dafin)}")
+        print(listerep)
 
 #condition de start
 if __name__ == "__main__":
