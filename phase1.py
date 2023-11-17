@@ -91,7 +91,7 @@ def produire_historique(nomsymbole, dadebut, dafin, valname):
             iso_date = datetime.date.fromisoformat(j)
 
             #on ajoute le tuple dans la liste.
-            listerep.append((iso_date, dernier_dico.get(valname)))
+            listerep.insert(0,(iso_date, dernier_dico.get(valname)))
 
         #message à mettre dans le terminal lorsque qu'on enclenche la commande:
         print(f"titre={i}: valeur={valname}, début={repr(dadebut)}, fin={repr(dafin)}")
